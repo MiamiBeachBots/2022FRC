@@ -49,6 +49,20 @@ public class DriveSubsystem extends SubsystemBase {
     m_ddrive.tankDrive(leftSpeed, rightSpeed);
   }
   
+  public void gyroDrive(double leftSpeed ,double rightSpeed) {
+    double error = -m_robotContainer.getGyro().getRate();
+    String str = Double.toString(error);
+    System.out.println(str);
+    m_ddrive.tankDrive(leftSpeed + kP * error, rightSpeed - kP * error);
+  }
+
+  public void gyroTurnFunc() {
+    double error = 90 - m_robotContainer.getGyro().getAngle();
+    String str = Double.toString(error);
+    System.out.println(str);
+    m_drive.tankDrive(kP * error, kP * -error);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
