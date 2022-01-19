@@ -7,18 +7,27 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.MjpegServer;
+
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * the package after creating this project, you must also update thebuild.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private int driveCounter = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -26,9 +35,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    new Thread(() -> {
+// Creates UsbCamera and MjpegServer [1] and connects them
+UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+mjpegServer1.setSource(usbCamera);
+
+// Creates the CvSink and connects it to the UsbCamera
+CvSink cvSink = new CvSink("opencv_USB Camera 0");
+cvSink.setSource(usbCamera);
+
+// Creates the CvSource and MjpegServer [2] and connects them
+CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
+MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
+  mjpegServer2.setSource(outputStream);
+}).start();
+
   }
 
   /**
@@ -83,14 +106,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(m_robotContainer.stick().getRawButton(0)){
-      this.driveCounter++;
-    }
-    if(this.driveCounter % 2 == 0){
-      m_robotContainer.getDefaultDrive().execute();
-    } else {
+    if(m_robotContainer.stick().getRawButtonPressed(6)){
       m_robotContainer.getGyroDrive().execute();
+      System.out.println("Pressing Button 6");
+    } else {
+      m_robotContainer.getDefaultDrive().execute();
     }
+    
   }
 
   @Override

@@ -9,17 +9,26 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
+import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
 
   public static DriveSubsystem m_drive;
-  private double rspeed = 0;
-  private double lspeed = 0;
+  private double rSpeed = 0;
+  private double lSpeed = 0;
   private final double delta = 0.05;
-  private final double maxSpeed = 0.8;
-
   double kP = 0.0075;
+
+  // getters
+  public double getRspeed() {
+    return this.rSpeed;
+  } 
+  
+  public double getLspeed() {
+    return this.lSpeed;
+  }
+
 
   private final RobotContainer m_robotContainer;
 
@@ -36,7 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(RobotContainer robotContainer) {
   m_robotContainer = robotContainer;
   }
-
   
   public static DriveSubsystem getInstance(RobotContainer rc){
     if (m_drive == null){
