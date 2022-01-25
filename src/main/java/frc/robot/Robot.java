@@ -7,15 +7,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.cscore.VideoSink;
 
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import edu.wpi.first.cscore.VideoMode.PixelFormat;
+
 
 
 /**
@@ -26,8 +28,13 @@ import edu.wpi.first.cscore.VideoMode.PixelFormat;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private NetworkTableEntry cameraSelection;
   private RobotContainer m_robotContainer;
+
+  private UsbCamera usbCamera1;
+  private UsbCamera usbCamera2;
+  private VideoSink server;
+  private int cameraCounter = 2;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -36,22 +43,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    new Thread(() -> {
-// Creates UsbCamera and MjpegServer [1] and connects them
-UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-mjpegServer1.setSource(usbCamera);
 
-// Creates the CvSink and connects it to the UsbCamera
-CvSink cvSink = new CvSink("opencv_USB Camera 0");
-cvSink.setSource(usbCamera);
+    usbCamera1 = CameraServer.startAutomaticCapture(0);
+    usbCamera2 = CameraServer.startAutomaticCapture(1);
 
-// Creates the CvSource and MjpegServer [2] and connects them
-CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
-MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
-  mjpegServer2.setSource(outputStream);
-}).start();
+    server = CameraServer.getServer();
 
+    //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+    
   }
 
   /**
@@ -101,17 +100,46 @@ MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
+      // if (m_robotContainer.stick().getRawButton(1)) {
+      //   camCounter++;
+      //   if (camCounter % 2 == 0) {
+      //     camSelection.setString(camera1.getName());
+      //   } else {
+      //     camSelection.setString(camera2.getName());
+      //   }
+
+      // }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(m_robotContainer.stick().getRawButtonPressed(6)){
+    //System.out.println(NetworkTableInstance.getDefault().getTable("/SmartDashboard").getKeys());
+    
+    if(m_robotContainer.stick().getRawButton(6)){
       m_robotContainer.getGyroDrive().execute();
       System.out.println("Pressing Button 6");
     } else {
       m_robotContainer.getDefaultDrive().execute();
     }
+  
+    if (m_robotContainer.getStick().getRawButtonPressed(1)) {
+      cameraCounter++;
+      if (cameraCounter % 2 == 0) {
+        System.out.println("Setting Camera 2");
+        server.setSource(usbCamera2);
+      } else {
+        System.out.println("Setting Camera 1");
+        server.setSource(usbCamera1);
+      } 
+    }
+    // } else if (m_robotContainer.getStick().getRawButtonReleased(1)) {
+    //   System.out.println("Setting camera 1");
+    //   //cameraSelection.setString(usbCamera1.getName());
+    //   server.setSource(usbCamera1);
+    // }
+    
     
   }
 
