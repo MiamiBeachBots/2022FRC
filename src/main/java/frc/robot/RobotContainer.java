@@ -15,6 +15,7 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.commands.autoCommand;
 import frc.robot.commands.gyroDrive;
+import edu.wpi.first.wpilibj.SPI;
 
 
 /**
@@ -36,7 +37,7 @@ public class RobotContainer {
   private final Joystick m_stick = new Joystick(0);
   private final Joystick m_bigStick = new Joystick(1);
 
-  private final ADIS16448_IMU gyro = new ADIS16448_IMU();
+  private final ADIS16448_IMU gyro = new ADIS16448_IMU(ADIS16448_IMU.IMUAxis.kZ, SPI.Port.kMXP, ADIS16448_IMU.CalibrationTime._1s);
 
 
 
@@ -46,9 +47,9 @@ public class RobotContainer {
     configureButtonBindings();
     m_drive = DriveSubsystem.getInstance(this); // intialize drive subsystem
     m_defaultDrive = new DefaultDrive(m_drive, this); // intialize command
+    m_gyroDrive = new gyroDrive(m_drive,this);
     m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
     m_autoCommand = new autoCommand(m_drive, this);
-    m_gyroDrive = new gyroDrive(m_drive,this);
   }
 
 
@@ -58,6 +59,10 @@ public class RobotContainer {
 
   public gyroDrive getGyroDrive(){
     return m_gyroDrive;
+  }
+
+  public void doGyroTurn(){
+    m_drive.rotateToAngle(180);
   }
 
   public static RobotContainer getInstance(){

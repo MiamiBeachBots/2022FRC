@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.*;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
@@ -53,22 +54,22 @@ public class DriveSubsystem extends SubsystemBase {
     return m_drive;
   }
 
-  public void tankDrive(double leftSpeed, double rightSpeed) {
+  public void tankDrive2(double leftSpeed, double rightSpeed) {
     m_ddrive.tankDrive(leftSpeed, rightSpeed);
   }
   
   public void gyroDrive(double leftSpeed ,double rightSpeed) {
-    double error = -m_robotContainer.getGyro().getRate();
-    String str = Double.toString(error);
-    System.out.println(str);
-    m_ddrive.tankDrive(leftSpeed + kP * error, rightSpeed - kP * error);
+    //double error = -m_robotContainer.getGyro().getAngle();
+    m_ddrive.tankDrive(leftSpeed,rightSpeed);
   }
 
-  public void gyroTurnFunc() {
-    double error = 90 - m_robotContainer.getGyro().getAngle();
-    String str = Double.toString(error);
-    System.out.println(str);
-    m_drive.tankDrive(kP * error, kP * -error);
+  public void rotateToAngle(double targetAngle) {
+    double error = targetAngle - m_robotContainer.getGyro().getAngle();
+    if(error > 1){
+      m_ddrive.tankDrive(0.3 + kP * error, 0.3 - kP * error);
+
+    }
+    m_ddrive.tankDrive(0.3 + kP * error, 0.3 - kP * -error);
   }
 
   @Override
