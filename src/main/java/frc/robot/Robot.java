@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
 
   private int cameraCounter = 2;
   private boolean autoDriveCounter = true;
+  private boolean autoShootCounter = true;
 
   private AnalogInput ultrasonic1 = new AnalogInput(0);
   //private AnalogInput ultrasonic2 = new AnalogInput(1);
@@ -104,6 +105,14 @@ public class Robot extends TimedRobot {
       m_robotContainer.getDefaultDrive().backward();
     } else if (getRangeInches(ultrasonic1) <= 36) {
       m_robotContainer.getDefaultDrive().autoDrive(false);
+      if (autoShootCounter) {
+        m_robotContainer.doLift(1);
+        robotTimer.reset();
+        if (robotTimer.get() > 2) {
+          m_robotContainer.doLift(1);
+        }
+        autoShootCounter = false;
+      }
     } else {
       m_robotContainer.getDefaultDrive().autoDrive(true);
     }

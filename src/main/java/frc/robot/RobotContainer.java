@@ -86,6 +86,10 @@ public class RobotContainer {
     m_intake.intake(speed);
   }
 
+  public void doShoot(double speed) {
+    m_shoot.shoot(speed);
+  }
+
   public static RobotContainer getInstance(){
     if(m_robotContainer == null){
       m_robotContainer = new RobotContainer();
