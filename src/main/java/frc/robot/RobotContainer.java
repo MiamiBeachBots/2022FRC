@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.commands.autoCommand;
+import frc.robot.commands.backwardAuto;
+import frc.robot.commands.stopCommand;
 import frc.robot.commands.gyroDrive;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -29,8 +33,12 @@ public class RobotContainer {
   
   private final DefaultDrive m_defaultDrive;
   private final DriveSubsystem m_drive;
+  private final ShooterSubsystem m_shoot;
+  private final IntakeSubsystem m_intake;
   private final gyroDrive m_gyroDrive;
   private final autoCommand m_autoCommand;
+  private final backwardAuto m_backwardAuto;
+  private final stopCommand m_stopCommand;
 
   private static RobotContainer m_robotContainer;
   // OIs instance
@@ -48,8 +56,12 @@ public class RobotContainer {
     m_drive = DriveSubsystem.getInstance(this); // intialize drive subsystem
     m_defaultDrive = new DefaultDrive(m_drive, this); // intialize command
     m_gyroDrive = new gyroDrive(m_drive,this);
-    m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
+    //m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
     m_autoCommand = new autoCommand(m_drive, this);
+    m_shoot = ShooterSubsystem.getInstance(this);
+    m_intake = IntakeSubsystem.getInstance(this);
+    m_backwardAuto = new backwardAuto(m_drive, this);
+    m_stopCommand = new stopCommand(m_drive, this);
   }
 
 
@@ -62,7 +74,16 @@ public class RobotContainer {
   }
 
   public void doGyroTurn(){
+    //Not used yet, this is a test
     m_drive.rotateToAngle(180);
+  }
+
+  public void doLift(double position){
+    m_shoot.lift(position);
+  }
+
+  public void doIntake(double speed) {
+    m_intake.intake(speed);
   }
 
   public static RobotContainer getInstance(){
@@ -97,6 +118,9 @@ public class RobotContainer {
   {
     return this.m_stick;
   }
+  public Joystick getBigStick(){
+    return this.m_bigStick;
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -107,4 +131,14 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
   }
+
+  public Command getBackwordCommand() 
+  {
+    return m_backwardAuto;
+  }
+
+  public Command getStopCommand(){
+    return m_stopCommand;
+  }
+
 }

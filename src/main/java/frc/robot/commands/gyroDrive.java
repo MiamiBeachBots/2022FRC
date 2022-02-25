@@ -29,7 +29,10 @@ public class gyroDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.m_drive.tankDrive2(0.0,0.0);
+    //this is in test phase
+    //It's going super slow so I can see if its being run
+    this.m_drive.gyroDrive(0.8 * (this.m_robotContainer.getStick().getY()));
+
   }
 
   // Called once the command ends or is interrupted.

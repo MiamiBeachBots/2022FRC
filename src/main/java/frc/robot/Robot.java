@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.RobotController;
-
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -39,7 +40,10 @@ public class Robot extends TimedRobot {
   private int cameraCounter = 2;
   private boolean autoDriveCounter = true;
 
-  private AnalogInput ultrasonic = new AnalogInput(0);
+  private AnalogInput ultrasonic1 = new AnalogInput(0);
+  //private AnalogInput ultrasonic2 = new AnalogInput(1);
+  //private AnalogInput ultrasonic3 = new AnalogInput(2);
+  private Timer robotTimer = new Timer();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -54,11 +58,6 @@ public class Robot extends TimedRobot {
 
     server = CameraServer.getServer();
     m_robotContainer.getGyro().calibrate();
-    System.out.println("Calibrateeeeeed");
-
-    //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
-    
-    //Ultrasonic.setAutomaticMode(true);
   }
 
   /**
@@ -88,6 +87,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    robotTimer.start();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -98,15 +98,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    //System.out.println(getRangeInches());
-    if (getRangeInches() < 36) {
+    //Uses Ultrasonic sensor to stop 36 inches before the wall
+    //Test Code to test the Ultrasonic
+    if (robotTimer.get() <= 0.5) {
+      m_robotContainer.getDefaultDrive().backward();
+    } else if (getRangeInches(ultrasonic1) <= 36) {
       m_robotContainer.getDefaultDrive().autoDrive(false);
     } else {
-    System.out.println(autoDriveCounter);
-    m_robotContainer.getDefaultDrive().autoDrive(true);
+      m_robotContainer.getDefaultDrive().autoDrive(true);
     }
-    SmartDashboard.putNumber("Auto Sensor", getRangeInches());
-    //m_robotContainer.doGyroTurn();
+    
+    SmartDashboard.putNumber("Auto Sensor", getRangeInches(ultrasonic1));
   }
 
   @Override
@@ -118,36 +120,30 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
-      // if (m_robotContainer.stick().getRawButton(1)) {
-      //   camCounter++;
-      //   if (camCounter % 2 == 0) {
-      //     camSelection.setString(camera1.getName());
-      //   } else {
-      //     camSelection.setString(camera2.getName());
-      //   }
-
-      // }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    //System.out.println(NetworkTableInstance.getDefault().getTable("/SmartDashboard").getKeys());
-    
+
+    // This is an if statement to switch from default tank drive to gyroDrive, which should straigten us out
+    //There is a sequencing issue with the commands, the gyroDrive comamnd is getting overwritten by the default drive
     if(m_robotContainer.stick().getRawButton(6)){
-      //m_robotContainer.getGyroDrive().execute();
       m_robotContainer.getGyroDrive().execute();
       System.out.println("Pressing Button 6");
     } else {
       m_robotContainer.getDefaultDrive().execute();
     }
+
+    //If button press then reset the gyro
     if(m_robotContainer.stick().getRawButtonPressed(5)) {
       m_robotContainer.getGyro().calibrate();
     }
   
+    //Switches Camera input on Smartdashboard
     if (m_robotContainer.getStick().getRawButtonPressed(1)) {
       cameraCounter++;
+      //m_robotContainer.doIntake(0.5);
       if (cameraCounter % 2 == 0) {
         System.out.println("Setting Camera 2");
         server.setSource(usbCamera2);
@@ -156,13 +152,17 @@ public class Robot extends TimedRobot {
         server.setSource(usbCamera1);
       } 
     }
-    // } else if (m_robotContainer.getStick().getRawButtonReleased(1)) {
-    //   System.out.println("Setting camera 1");
-    //   //cameraSelection.setString(usbCamera1.getName());
-    //   server.setSource(usbCamera1);
+    if(getRangeInches(ultrasonic1) <= 3) {
+      m_robotContainer.doLift(1);
+    } else {
+      m_robotContainer.doLift(0);
+    }
+    m_robotContainer.doIntake(-0.7);
+    // if (m_robotContainer.getStick().getRawButtonPressed(8)) {
+    //   m_robotContainer.doIntake(0.6);
     // }
-    //System.out.println("Angle: " + m_robotContainer.getGyro().getAngle());
-    SmartDashboard.putNumber("Ultrasonic Sensor Distance", getRangeInches());
+
+    SmartDashboard.putNumber("Ultrasonic Sensor Distance", getRangeInches(ultrasonic1));
     SmartDashboard.putNumber("Throttle", m_robotContainer.getStick().getThrottle());
     SmartDashboard.putNumber("Gyro Rate", m_robotContainer.getGyro().getRate());
     SmartDashboard.putNumber("Gyro angle", m_robotContainer.getGyro().getAngle());
@@ -180,21 +180,28 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {}
 
   @Override
+  public void simulationInit(){
+    System.out.println("Simulation just started");
+    //robotTimer.start();
+  }
+
+  @Override
   public void simulationPeriodic() 
   {
     System.out.println("Running simulation");
+    //System.out.println(robotTimer.get());
   }
 
-  public double getRangeCentimerters()
+  public double getRangeCentimerters(AnalogInput ultrasonicParam)
   {
-    return getVoltageVals() * 0.125;    
+    return getVoltageVals(ultrasonicParam) * 0.125;    
   }
-  public double getRangeInches()
+  public double getRangeInches(AnalogInput ultrasonicParam)
   {
-    return getVoltageVals() * 0.0492;
+    return getVoltageVals(ultrasonicParam) * 0.0492 - 12;
   }
 
-  public double getVoltageVals()
+  public double getVoltageVals(AnalogInput ultrasonic)
   {
     double rawValue = ultrasonic.getValue();
     double k = 5/RobotController.getVoltage5V();

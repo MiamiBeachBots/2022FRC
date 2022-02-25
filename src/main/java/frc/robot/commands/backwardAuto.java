@@ -8,13 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DefaultDrive extends CommandBase {
-  // props
+public class backwardAuto extends CommandBase {
+  /** Creates a new backwardAuto. */
   private final DriveSubsystem m_drive;
   private final RobotContainer m_robotContainer;
-  
-  /** Creates a new DefaultDrive. */
-  public DefaultDrive(DriveSubsystem m_drive, RobotContainer robotContainer) {
+
+  public backwardAuto(DriveSubsystem m_drive, RobotContainer robotContainer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drive = m_drive;
     this.m_robotContainer = robotContainer;
@@ -29,24 +28,8 @@ public class DefaultDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     this.m_drive.tankDrive2(0.8 * (this.m_robotContainer.getStick().getThrottle()), -0.8 * (this.m_robotContainer.getStick().getY()));
-  }
-
-  //test function for autonomous, not used yet
-  public void autoDrive(boolean stop) 
-  {
-    if (!stop) {
-      this.m_drive.tankDrive2(0, 0);
-    } else {
-      this.m_drive.tankDrive2(-0.4, 0.4);
-    }
-  }
-
-  public void backward()
-  {
     this.m_drive.tankDrive2(0.6, -0.6);
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
