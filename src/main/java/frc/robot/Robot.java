@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.doLift(1);
         robotTimer.reset();
         if (robotTimer.get() > 2) {
-          m_robotContainer.doLift(1);
+          m_robotContainer.doShoot(1);
         }
         autoShootCounter = false;
       }
