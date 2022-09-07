@@ -38,13 +38,19 @@ public class DefaultDrive extends CommandBase {
     if (!stop) {
       this.m_drive.tankDrive2(0, 0);
     } else {
-      this.m_drive.tankDrive2(-0.4, 0.4);
+      this.m_drive.tankDrive2(-0.5, 0.5);
     }
   }
 
   public void backward()
   {
-    this.m_drive.tankDrive2(0.6, -0.6);
+    this.m_drive.tankDrive2(0.5, -0.5);
+  }
+
+  
+  public void stop()
+  {
+    this.m_drive.tankDrive2(0, 0);
   }
 
 

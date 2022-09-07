@@ -28,7 +28,7 @@ public class backwardAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.m_drive.tankDrive2(0.6, -0.6);
+    this.m_drive.tankDrive2(0.4, -0.4);
   }
 
   // Called once the command ends or is interrupted.

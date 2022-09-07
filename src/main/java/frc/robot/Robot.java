@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
+
+import org.ejml.dense.block.MatrixOps_DDRB;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -101,21 +104,30 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //Uses Ultrasonic sensor to stop 36 inches before the wall
     //Test Code to test the Ultrasonic
-    if (robotTimer.get() <= 0.5) {
-      m_robotContainer.getDefaultDrive().backward();
-    } else if (getRangeInches(ultrasonic1) <= 36) {
+    if (robotTimer.get() <= 4) {
       m_robotContainer.getDefaultDrive().autoDrive(false);
-      if (autoShootCounter) {
-        m_robotContainer.doLift(1);
-        robotTimer.reset();
-        if (robotTimer.get() > 2) {
-          m_robotContainer.doShoot(1);
-        }
-        autoShootCounter = false;
-      }
+      //m_robotContainer.doLift(1);
+      //m_robotContainer.doElevatorLift(-1);
+      m_robotContainer.doShoot(0.60);
+    } else if (robotTimer.get() >=4.5 && robotTimer.get() < 6) {
+      m_robotContainer.doElevatorLift(-1);
+      m_robotContainer.doShoot(0.60);
+    } else if (robotTimer.get() >= 6 && robotTimer.get() < 10){
+      m_robotContainer.getDefaultDrive().backward();
+      //m_robotContainer.doLift(0);
     } else {
-      m_robotContainer.getDefaultDrive().autoDrive(true);
+      m_robotContainer.getDefaultDrive().stop();
     }
+    
+    // else if ((getRangeInches(ultrasonic1) <= 45) && robotTimer.get() >= 4.5) {
+    //   m_robotContainer.getDefaultDrive().autoDrive(false);
+    //   m_robotContainer.doLift(1);
+    //   m_robotContainer.doElevatorLift(-0.9);
+    //   m_robotContainer.doShoot(0.60);
+      
+    // } else {
+    //   m_robotContainer.getDefaultDrive().autoDrive(true);
+    // }
     
     SmartDashboard.putNumber("Auto Sensor", getRangeInches(ultrasonic1));
   }
@@ -152,7 +164,6 @@ public class Robot extends TimedRobot {
     //Switches Camera input on Smartdashboard
     if (m_robotContainer.getStick().getRawButtonPressed(1)) {
       cameraCounter++;
-      //m_robotContainer.doIntake(0.5);
       if (cameraCounter % 2 == 0) {
         System.out.println("Setting Camera 2");
         server.setSource(usbCamera2);
@@ -161,32 +172,78 @@ public class Robot extends TimedRobot {
         server.setSource(usbCamera1);
       } 
     }
-    if(getRangeInches(ultrasonic1) <= 3) {
-      m_robotContainer.doLift(1);
-    } else {
-      m_robotContainer.doLift(0);
-    }
-    m_robotContainer.doIntake(-0.7);
-    // if (m_robotContainer.getStick().getRawButtonPressed(8)) {
-    //   m_robotContainer.doIntake(0.6);
+
+  //   /*
+  //   Big stick IO
+  //   */
+  //   //Intake Code
+     if(m_robotContainer.getStick().getRawButton(8)) {
+       m_robotContainer.doBackIntake(0.35); // Find out this value for best intake
+     } else {
+       m_robotContainer.doBackIntake(0);
+     }
+
+     if(m_robotContainer.getStick().getRawButton(7)) {
+       m_robotContainer.doFrontIntake(0.45);
+     } else {
+       m_robotContainer.doFrontIntake(0);
+     }
+     if(m_robotContainer.getStick().getRawButton(4)){
+      m_robotContainer.doIntake(-0.45);
+     }
+
+  //   /*
+  //   Auto system
+  // */
+
+  if(m_robotContainer.getBigStick().getRawButton(1)) {
+    m_robotContainer.doElevatorLift(m_robotContainer.getBigStick().getY());
+    m_robotContainer.doLift(1);
+    m_robotContainer.doShoot(0.60);
+    //m_robotContainer.getBigStick().getRawAxis(3)
+  } else {
+    m_robotContainer.doLift(0);
+    m_robotContainer.doShoot(0);
+    m_robotContainer.doElevatorLift(0);
+  }
+    
+    // if(getRangeInches(ultrasonic1) <= 3) {
+    //   m_robotContainer.doLift(1);
+    //   m_robotContainer.doElevatorLift(0.3);
+    // } else {
+    //   m_robotContainer.doElevatorLift(0);
+    //   m_robotContainer.doLift(0);
     // }
 
+   // m_robotContainer.doElevatorLift(-m_robotContainer.getBigStick().getY());
+ //   m_robotContainer.doShoot(m_robotContainer.getStick().getY());
+    
     SmartDashboard.putNumber("Ultrasonic Sensor Distance", getRangeInches(ultrasonic1));
+    //SmartDashboard.putNumber("Ultrasonic Top Sensor Distance", getRangeInches(ultrasonic2));
     SmartDashboard.putNumber("Throttle", m_robotContainer.getStick().getThrottle());
     SmartDashboard.putNumber("Gyro Rate", m_robotContainer.getGyro().getRate());
     SmartDashboard.putNumber("Gyro angle", m_robotContainer.getGyro().getAngle());
     
   }
 
+
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    System.out.println("Test phrase initialized");
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // testDrive();
+    // testIntake();
+    // testShoot();
+    // testAutoSystem();
+    // testSwitchCamera();
+    testSmartDashboard();
+  }
 
   @Override
   public void simulationInit(){
@@ -198,23 +255,81 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() 
   {
     System.out.println("Running simulation");
-    //System.out.println(robotTimer.get());
+    System.out.println(m_robotContainer.getBigStick().getRawAxis(3));
   }
 
-  public double getRangeCentimerters(AnalogInput ultrasonicParam)
-  {
+  public double getRangeCentimerters(AnalogInput ultrasonicParam) {
     return getVoltageVals(ultrasonicParam) * 0.125;    
   }
-  public double getRangeInches(AnalogInput ultrasonicParam)
-  {
+  public double getRangeInches(AnalogInput ultrasonicParam) {
     return getVoltageVals(ultrasonicParam) * 0.0492 - 12;
   }
 
-  public double getVoltageVals(AnalogInput ultrasonic)
-  {
+  public double getVoltageVals(AnalogInput ultrasonic) {
     double rawValue = ultrasonic.getValue();
     double k = 5/RobotController.getVoltage5V();
     double voltage = rawValue * k;
     return voltage;
+  }
+
+  public void testDrive() {
+    if(m_robotContainer.stick().getRawButton(6)){
+      m_robotContainer.getGyroDrive().execute();
+      System.out.println("Pressing Button 6");
+    } else {
+      m_robotContainer.getDefaultDrive().execute();
+    }
+
+    //If button press then reset the gyro
+    if(m_robotContainer.stick().getRawButtonPressed(5)) {
+      m_robotContainer.getGyro().calibrate();
+    }
+  }
+
+  public void testSwitchCamera() {
+    //Switches Camera input on Smartdashboard
+    if (m_robotContainer.getStick().getRawButtonPressed(1)) {
+      cameraCounter++;
+      if (cameraCounter % 2 == 0) {
+        System.out.println("Setting Camera 2");
+        server.setSource(usbCamera2);
+      } else {
+        System.out.println("Setting Camera 1");
+        server.setSource(usbCamera1);
+      } 
+    }
+  }
+
+  // public void testShoot() {
+  //   if (m_robotContainer.getBigStick().getRawButton(1)) {
+  //     m_robotContainer.doShoot(0.5);
+  //     if(getRangeInches(ultrasonic2) <= 3) {
+  //       m_robotContainer.doElevatorLift(0.3);
+  //     }
+  //   }
+  // }
+
+  public void testIntake() {
+    m_robotContainer.doFrontIntake(m_robotContainer.getBigStick().getY());
+    m_robotContainer.doBackIntake(m_robotContainer.getBigStick().getZ());
+    //m_robotContainer.doShoot(m_robotContainer.getBigStick().getY());
+  }
+
+  // public void testAutoSystem() {
+  //   if(getRangeInches(ultrasonic1) <= 5) {
+  //     m_robotContainer.doLift(1);
+  //     m_robotContainer.doElevatorLift(0.2);
+  //   } else {
+  //     m_robotContainer.doElevatorLift(0);
+  //     m_robotContainer.doLift(0);
+  //   }
+  // }
+
+  public void testSmartDashboard() {
+    //SmartDashboard.putNumber("Ultrasonic Sensor Distance", getRangeInches(ultrasonic1));
+    //SmartDashboard.putNumber("Ultrasonic Top Sensor Distance", getRangeInches(ultrasonic2));
+    SmartDashboard.putNumber("Throttle", m_robotContainer.getStick().getThrottle());
+    SmartDashboard.putNumber("Gyro Rate", m_robotContainer.getGyro().getRate());
+    SmartDashboard.putNumber("Gyro angle", m_robotContainer.getGyro().getAngle());
   }
 }

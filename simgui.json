@@ -12,8 +12,16 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/ElevatorSubsystem": "Subsystem",
+      "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+      "/LiveWindow/Ungrouped/PWMSparkMax[6]": "Motor Controller",
+      "/LiveWindow/Ungrouped/PWMSparkMax[7]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Victor[0]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Victor[5]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Victor[8]": "Motor Controller"
     }
   }
 }

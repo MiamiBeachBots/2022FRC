@@ -13,8 +13,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public static IntakeSubsystem m_intake;
   public final RobotContainer m_robotContainer;
-  public Victor m_intakeMotorFront = new Victor(0);
-  //public Victor m_intakeMotorBack = new Victor(8);
+  public Victor m_intakeMotorFront = new Victor(5);
+  public Victor m_intakeMotorBack = new Victor(8);
 
   public IntakeSubsystem(RobotContainer m_robotContainer) {
     this.m_robotContainer = m_robotContainer;
@@ -27,10 +27,18 @@ public class IntakeSubsystem extends SubsystemBase {
     return m_intake;
   }
 
-  public void intake(double liftSpeed) 
+  public void frontIntake(double liftSpeed) 
   {
     m_intakeMotorFront.set(liftSpeed);
-    //m_intakeMotorBack.set(liftSpeed);
+  }
+
+  public void backIntake(double liftSpeed) {
+    m_intakeMotorBack.set(liftSpeed);
+  }
+
+  public void intake(double liftSpeed) {
+    m_intakeMotorBack.set(liftSpeed);
+    m_intakeMotorFront.set(liftSpeed);
   }
 
   @Override

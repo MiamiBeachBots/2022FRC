@@ -6,8 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.motorcontrol.Victor;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.Servo;
+//import com.revrobotics.;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -17,10 +18,10 @@ public class ShooterSubsystem extends SubsystemBase {
     m_robotContainer = robotContainer;
   }
 
-  Victor m_shooter = new Victor(6);
-  //servo = new Servo(0);
+  PWMSparkMax m_shooter = new PWMSparkMax(7);
+  PWMSparkMax m_shooter2 = new PWMSparkMax(6);
+
   Servo servo1 = new Servo(9);
-  //Servo servo2 = new Servo(8);
 
   public static ShooterSubsystem getInstance(RobotContainer rc){
     if (m_shoot == null) {
@@ -30,9 +31,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void shoot(double shotSpeed){
-    if (shotSpeed >= 1 && shotSpeed <= -1){
-      m_shooter.set(shotSpeed);
-    }
+      m_shooter.set(-shotSpeed);
+      m_shooter2.set(shotSpeed);
+    
   }
 
   public void lift(double position){
