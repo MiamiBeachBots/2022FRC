@@ -157,8 +157,11 @@ public class Robot extends TimedRobot {
     }
 
     //If button press then reset the gyro
-    if(m_robotContainer.stick().getRawButtonPressed(5)) {
-      m_robotContainer.getGyro().calibrate();
+    if(m_robotContainer.stick().getRawButtonPressed(2)) {
+      m_robotContainer.getGyro().reset();
+    }
+    if(m_robotContainer.stick().getRawButtonPressed(4)) {
+      m_robotContainer.doShoot(1);
     }
   
     //Switches Camera input on Smartdashboard
