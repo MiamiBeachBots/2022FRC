@@ -15,7 +15,7 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+//import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.commands.autoCommand;
 import frc.robot.commands.backwardAuto;
 import frc.robot.commands.stopCommand;
@@ -35,7 +35,7 @@ public class RobotContainer {
   private final DefaultDrive m_defaultDrive;
   private final DriveSubsystem m_drive;
   private final ShooterSubsystem m_shoot;
-  private final IntakeSubsystem m_intake;
+  //private final IntakeSubsystem m_intake;
   private final ElevatorSubsystem m_elevator;
   private final gyroDrive m_gyroDrive;
   private final autoCommand m_autoCommand;
@@ -61,7 +61,7 @@ public class RobotContainer {
     //m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
     m_autoCommand = new autoCommand(m_drive, this);
     m_shoot = ShooterSubsystem.getInstance(this);
-    m_intake = IntakeSubsystem.getInstance(this);
+    //m_intake = IntakeSubsystem.getInstance(this);
     m_elevator = ElevatorSubsystem.getInstance(this);
     m_backwardAuto = new backwardAuto(m_drive, this);
     m_stopCommand = new stopCommand(m_drive, this);
@@ -90,15 +90,15 @@ public class RobotContainer {
   }
 
   public void doFrontIntake(double speed) {
-    m_intake.frontIntake(speed);
+    //m_intake.frontIntake(speed);
   }
 
   public void doBackIntake(double speed) {
-    m_intake.backIntake(speed);
+    //m_intake.backIntake(speed);
   }
 
   public void doIntake(double speed) {
-    m_intake.intake(speed);
+    //m_intake.intake(speed);
   }
   public void doShoot(double speed) {
     m_shoot.shoot(speed);
