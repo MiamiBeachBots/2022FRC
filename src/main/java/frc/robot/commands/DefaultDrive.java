@@ -44,7 +44,7 @@ public class DefaultDrive extends CommandBase {
 
   public void backward()
   {
-    this.m_drive.tankDrive2(0.5, -0.5);
+    this.m_drive.tankDrive2(0.6, -0.6);
   }
 
   
