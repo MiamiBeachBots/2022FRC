@@ -13,7 +13,7 @@ public class DefaultDrive extends CommandBase {
   private final DriveSubsystem m_drive;
   private final RobotContainer m_robotContainer;
 
-  private final Double MAX_SPEED = 0.7;
+  private final Double MAX_SPEED = 0.8;
   
   /** Creates a new DefaultDrive. */
   public DefaultDrive(DriveSubsystem m_drive, RobotContainer robotContainer) {

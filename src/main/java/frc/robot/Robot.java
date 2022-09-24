@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
 
     server = CameraServer.getServer();
     m_robotContainer.getGyro().calibrate();
+    server.setSource(usbCamera1);
   }
 
   /**
