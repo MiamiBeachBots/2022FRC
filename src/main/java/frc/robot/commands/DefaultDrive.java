@@ -12,6 +12,8 @@ public class DefaultDrive extends CommandBase {
   // props
   private final DriveSubsystem m_drive;
   private final RobotContainer m_robotContainer;
+
+  private final Double MAX_SPEED = 0.7;
   
   /** Creates a new DefaultDrive. */
   public DefaultDrive(DriveSubsystem m_drive, RobotContainer robotContainer) {
@@ -29,9 +31,8 @@ public class DefaultDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     this.m_drive.tankDrive2(0.8 * (this.m_robotContainer.getStick().getThrottle()), -0.8 * (this.m_robotContainer.getStick().getY()));
+     this.m_drive.tankDrive2(MAX_SPEED * (this.m_robotContainer.getStick().getThrottle()), -MAX_SPEED * (this.m_robotContainer.getStick().getY()));
   }
-
   //test function for autonomous, not used yet
   public void autoDrive(boolean stop) 
   {
