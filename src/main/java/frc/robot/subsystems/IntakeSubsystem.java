@@ -4,14 +4,14 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.motorcontrol.Victor;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
-
   public static IntakeSubsystem m_intake;
+
   public final RobotContainer m_robotContainer;
   public Victor m_intakeMotorFront = new Victor(5);
   public Victor m_intakeMotorBack = new Victor(8);
@@ -20,15 +20,14 @@ public class IntakeSubsystem extends SubsystemBase {
     this.m_robotContainer = m_robotContainer;
   }
 
-  public static IntakeSubsystem getInstance(RobotContainer rc){
+  public static IntakeSubsystem getInstance(RobotContainer rc) {
     if (m_intake == null) {
       m_intake = new IntakeSubsystem(rc);
     }
     return m_intake;
   }
 
-  public void frontIntake(double liftSpeed) 
-  {
+  public void frontIntake(double liftSpeed) {
     m_intakeMotorFront.set(liftSpeed);
   }
 

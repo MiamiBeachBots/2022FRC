@@ -4,18 +4,17 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.*;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
-
   public static DriveSubsystem m_drive;
+
   private double rSpeed = 0;
   private double lSpeed = 0;
   private double kAngleSetpoint = 0.0;
@@ -33,8 +32,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final RobotContainer m_robotContainer;
 
-  Victor m_frontRight = new Victor(4); // added motor 1 and 2 but we should group them in speed controller groups and
-                                   // call them right and left side them put them into differnetial drive
+  Victor m_frontRight =
+      new Victor(4); // added motor 1 and 2 but we should group them in speed controller groups and
+  // call them right and left side them put them into differnetial drive
   Victor m_backLeft = new Victor(2);
   Victor m_backRight = new Victor(3);
   Victor m_frontLeft = new Victor(1);
@@ -64,8 +64,11 @@ public class DriveSubsystem extends SubsystemBase {
     // Testing this feature out right now, nothing is working.
     // I need to find an equation to convert an angle into an error so that we can
     // use it to adjust the steering
-    double turningValue = (kAngleSetpoint
-        - ((m_robotContainer.getGyro().getAngle() + Math.copySign(15.0, m_robotContainer.getGyro().getAngle())) * kP));
+    double turningValue =
+        (kAngleSetpoint
+            - ((m_robotContainer.getGyro().getAngle()
+                    + Math.copySign(15.0, m_robotContainer.getGyro().getAngle()))
+                * kP));
     // double compensation = Math.copySign(turningValue, ySpeed);
     m_ddrive.arcadeDrive(turningValue, ySpeed);
   }
@@ -75,12 +78,11 @@ public class DriveSubsystem extends SubsystemBase {
     double error = targetAngle - m_robotContainer.getGyro().getAngle();
     if (error > 1) {
       m_ddrive.tankDrive(0.3 + kP * error, 0.3 - kP * error);
-
     }
     m_ddrive.tankDrive(0.3 + kP * error, 0.3 - kP * -error);
   }
-  public void backward()
-  {
+
+  public void backward() {
     m_ddrive.tankDrive(0.4, -0.4);
   }
 

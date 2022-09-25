@@ -4,24 +4,22 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADIS16448_IMU;
+// import OIs
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.ADIS16448_IMU;
-import edu.wpi.first.wpilibj.AnalogGyro;
-// import OIs
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.DefaultDrive;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.commands.autoCommand;
 import frc.robot.commands.backwardAuto;
-import frc.robot.commands.stopCommand;
 import frc.robot.commands.gyroDrive;
-import edu.wpi.first.wpilibj.SPI;
-
+import frc.robot.commands.stopCommand;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,7 +29,7 @@ import edu.wpi.first.wpilibj.SPI;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  
+
   private final DefaultDrive m_defaultDrive;
   private final DriveSubsystem m_drive;
   private final ShooterSubsystem m_shoot;
@@ -47,9 +45,8 @@ public class RobotContainer {
   private final Joystick m_stick = new Joystick(0);
   private final Joystick m_bigStick = new Joystick(1);
 
-  private final ADIS16448_IMU gyro = new ADIS16448_IMU(ADIS16448_IMU.IMUAxis.kZ, SPI.Port.kMXP, ADIS16448_IMU.CalibrationTime._1s);
-
-
+  private final ADIS16448_IMU gyro =
+      new ADIS16448_IMU(ADIS16448_IMU.IMUAxis.kZ, SPI.Port.kMXP, ADIS16448_IMU.CalibrationTime._1s);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -57,8 +54,8 @@ public class RobotContainer {
     configureButtonBindings();
     m_drive = DriveSubsystem.getInstance(this); // intialize drive subsystem
     m_defaultDrive = new DefaultDrive(m_drive, this); // intialize command
-    m_gyroDrive = new gyroDrive(m_drive,this);
-    //m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
+    m_gyroDrive = new gyroDrive(m_drive, this);
+    // m_drive.setDefaultCommand(m_defaultDrive); // set default for drivesubsystem
     m_autoCommand = new autoCommand(m_drive, this);
     m_shoot = ShooterSubsystem.getInstance(this);
     m_intake = IntakeSubsystem.getInstance(this);
@@ -67,21 +64,20 @@ public class RobotContainer {
     m_stopCommand = new stopCommand(m_drive, this);
   }
 
-
-  public DefaultDrive getDefaultDrive(){
+  public DefaultDrive getDefaultDrive() {
     return m_defaultDrive;
   }
 
-  public gyroDrive getGyroDrive(){
+  public gyroDrive getGyroDrive() {
     return m_gyroDrive;
   }
 
-  public void doGyroTurn(){
-    //Not used yet, this is a test
+  public void doGyroTurn() {
+    // Not used yet, this is a test
     m_drive.rotateToAngle(180);
   }
 
-  public void doLift(double position){
+  public void doLift(double position) {
     m_shoot.lift(position);
   }
 
@@ -100,24 +96,23 @@ public class RobotContainer {
   public void doIntake(double speed) {
     m_intake.intake(speed);
   }
+
   public void doShoot(double speed) {
     m_shoot.shoot(speed);
   }
 
-
-
-  public static RobotContainer getInstance(){
-    if(m_robotContainer == null){
+  public static RobotContainer getInstance() {
+    if (m_robotContainer == null) {
       m_robotContainer = new RobotContainer();
-    } 
+    }
     return m_robotContainer;
-   }
+  }
 
-   public Joystick stick() {
+  public Joystick stick() {
     return m_stick;
   }
 
-  public ADIS16448_IMU getGyro(){
+  public ADIS16448_IMU getGyro() {
     return gyro;
   }
 
@@ -130,15 +125,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-
-
   private void configureButtonBindings() {}
 
-  public Joystick getStick() 
-  {
+  public Joystick getStick() {
     return this.m_stick;
   }
-  public Joystick getBigStick(){
+
+  public Joystick getBigStick() {
     return this.m_bigStick;
   }
 
@@ -152,13 +145,11 @@ public class RobotContainer {
     return m_autoCommand;
   }
 
-  public Command getBackwordCommand() 
-  {
+  public Command getBackwordCommand() {
     return m_backwardAuto;
   }
 
-  public Command getStopCommand(){
+  public Command getStopCommand() {
     return m_stopCommand;
   }
-
 }
