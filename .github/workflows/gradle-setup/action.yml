@@ -1,0 +1,16 @@
+name: "Prep Gradle"
+description: "Prepares Gradle for use in the build"
+
+runs:
+  using: "composite"
+  # Steps represent a sequence of tasks that will be executed as part of the job
+  steps:
+  # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  - uses: gradle/gradle-build-action@v2 # enables fancy caching.
+  - uses: actions/checkout@v2
+  - uses: gradle/wrapper-validation-action@v1 # this validates the jar file
+
+  # Make gradlew executable
+  - name: Make grandlew executable
+    run: chmod +x ${{ github.action_path }}/gradlew
+    shell: bash
