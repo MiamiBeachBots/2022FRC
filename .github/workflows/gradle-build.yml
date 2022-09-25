@@ -12,7 +12,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  # This workflow contains a job called "build" & a job called "formatting"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -23,19 +23,36 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: gradle/gradle-build-action@v2 # enables fancy caching.
     - uses: actions/checkout@v2
+    - uses: gradle/wrapper-validation-action@v1 # this validates the jar file
 
-    - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+    # Make gradlew executable
+    - name: Make grandlew executable
+      run: chmod +x gradlew
 
-    # Update Gradle Wrapper
-    - name: Update Gradle Wrapper
-      run: gradle wrapper && chmod +x gradlew
-
-    # Runs a single command using the runners shell
+    # build.
     - name: Compile and run tests on robot code
       run: ./gradlew build
-      
-    # Runs a single command using the runners shell
+  formatting:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # This grabs the WPILib docker container
+    container: wpilib/roborio-cross-ubuntu:2022-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: gradle/gradle-build-action@v2 # enables fancy caching.
+    - uses: actions/checkout@v2
+    - uses: gradle/wrapper-validation-action@v1 # this validates the jar file
+
+    # Make gradlew executable
+    - name: Make grandlew executable
+      run: chmod +x gradlew
+
+    # check formatting.
     - name: Validate Code is properly formatted
       run: ./gradlew spotlessCheck
+  
