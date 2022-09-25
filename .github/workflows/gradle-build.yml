@@ -30,7 +30,7 @@ jobs:
 
     # Make gradlew executable & fix git issue
     - name: Make grandlew executable
-      run: chmod +x gradlew && git config --global --add safe.directory $GITHUB_WORKSPACE
+      run: chmod +x gradlew && git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
     # build.
     - name: Compile and run tests on robot code
@@ -51,7 +51,7 @@ jobs:
 
     # Make gradlew executable & fix git issue
     - name: Make grandlew executable
-      run: chmod +x gradlew && git config --global --add safe.directory $GITHUB_WORKSPACE
+      run: chmod +x gradlew && git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
     # check formatting.
     - name: Validate Code is properly formatted
