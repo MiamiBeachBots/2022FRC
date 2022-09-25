@@ -14,5 +14,5 @@ package frc.robot;
  */
 public final class Constants {
 
-   public static final Double MAX_SPEED = 0.8;
+  public static final Double MAX_SPEED = 0.8;
 }

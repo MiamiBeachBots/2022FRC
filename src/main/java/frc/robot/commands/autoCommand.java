@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
-
 public class autoCommand extends CommandBase {
   /** Creates a new autoCommand. */
-
   private final DriveSubsystem m_drive;
+
   private final RobotContainer m_robotContainer;
 
   public autoCommand(DriveSubsystem m_drive, RobotContainer robotContainer) {
@@ -25,14 +24,12 @@ public class autoCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //empty command so we can set auto to default nothing
+    // empty command so we can set auto to default nothing
 
   }
 

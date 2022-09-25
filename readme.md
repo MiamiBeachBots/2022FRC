@@ -1,12 +1,12 @@
 ## TODO
 
-* Clean up the code 
-* Command based controls 
+* Clean up the code
+* Command based controls
 * Finish Gyro
-* Pathweaver/trajectory planning 
+* Pathweaver/trajectory planning
 * Network Tables
-* Py Coprocessor 
-* Smart Dashboard 
+* Py Coprocessor
+* Smart Dashboard
 
 ---
 * Create the readme
