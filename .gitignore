@@ -27,3 +27,6 @@ hs_err_pid*
 
 # idea
 .idea/
+
+#unexclude gradle wrapper jar
+!gradle-wrapper.jar
