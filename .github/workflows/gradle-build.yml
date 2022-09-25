@@ -22,7 +22,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: ../gradle-setup
+    - uses: ./.github/workflows/gradle-setup/action.yml
     # build.
     - name: Compile and run tests on robot code
       run: ./gradlew build
@@ -35,7 +35,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: ../gradle-setup
+    - uses: ./.github/workflows/gradle-setup/action.yml
       with:
         registry_username: ${{ secrets.DOCKER_USERNAME }}
         registry_password: ${{ secrets.DOCKER_PASSWORD }}
