@@ -28,6 +28,10 @@ jobs:
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    
+    # Update Gradle Wrapper
+    - name: Update Gradle Wrapper
+      run: gradle wrapper
 
     # Runs a single command using the runners shell
     - name: Validate Code is properly formatted
