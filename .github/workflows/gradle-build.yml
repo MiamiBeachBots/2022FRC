@@ -1,6 +1,6 @@
 # This is a basic workflow to build robot code.
 
-name: Gradle Build
+name: Check Gradle Build & Formatting
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch.
@@ -25,14 +25,17 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Grant execute permission for gradlew
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
 
     # Update Gradle Wrapper
     - name: Update Gradle Wrapper
-      run: gradle wrapper
+      run: gradle wrapper && chmod +x gradlew
 
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
+      
+    # Runs a single command using the runners shell
+    - name: Validate Code is properly formatted
+      run: ./gradlew spotlessCheck
